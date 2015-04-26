@@ -171,7 +171,7 @@ namespace PokerPlayer
         public bool HasStraightFlush()
         {
             List<Card> tempHand = new List<Card> { };
-            tempHand.Add(hand1.GroupBy(x => x.CardSuit).Where(x => x.Count() == 5).First().First());
+            tempHand = hand1.GroupBy(x => x.CardSuit).Where(x => x.Count() == 5).First().ToList();
             tempHand.OrderBy(x => x.CardRank);
             //loop through tempHand rank
             for (int i = 0; i < tempHand.Count() - 1; i++)
@@ -191,15 +191,15 @@ namespace PokerPlayer
         public bool HasRoyalFlush()
         {
             List<Card> tempHand = new List<Card> { };
-            tempHand.Add(hand1.GroupBy(x => x.CardSuit).Where(x => x.Count() == 5).First().First());
-            tempHand.OrderBy(x => x.CardRank);
+            tempHand = hand1.GroupBy(x => x.CardSuit).Where(x => x.Count() == 5).First().OrderBy(x => x.CardRank).ToList();
+            
             //loop through tempHand rank
             for (int i = 0; i < hand1.Count(); i++)
             {
                 //take value of card rank 
                 int currentRank = (int)hand1[i].CardRank;
-                //currentRank equal i + 11
-                if (currentRank == i+11)
+                //currentRank equal i + 10
+                if (currentRank == i+10)
                 {
                     return true;
                 }
