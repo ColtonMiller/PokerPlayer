@@ -140,19 +140,27 @@ namespace PokerPlayer
         }
         public bool HasStraight()
         {
-            hand1.OrderBy(x => x.CardRank);
+            //create temp list to hold hand1
+            List<Card> tempStraight = new List<Card>{};
+            tempStraight = (List<Card>)hand1.OrderBy(x => (int)x.CardRank).ToList();
             //loop through hand1 rank
-            for (int i = 0; i < hand1.Count() - 1; i++)
+            for (int i = 0; i < tempStraight.Count() - 1; i++)
             {
                 //take value of card rank and next card rank
-                int currentRank = (int)hand1[i].CardRank;
-                int nextRank = (int)hand1[i + 1].CardRank;
+                int currentRank = (int)tempStraight[i].CardRank;
+                int nextRank = (int)tempStraight[i + 1].CardRank;
                 //if next rank equals current rank plus 1 return true'
                 if (nextRank == currentRank + 1)
                 {
-                    return true;
+                    if (i == 3)
+                    {
+                        return true;
+                    }
                 }
-                return false;
+                else
+                {
+                    break;
+                }
             }
             return false;
         }
@@ -162,7 +170,7 @@ namespace PokerPlayer
         }
         public bool HasFullHouse()
         {
-            return hand1.GroupBy(x => x.CardSuit).Where(x => x.Count() == 2 || x.Count() == 3).Count() == 2;
+            return hand1.GroupBy(x => x.CardSuit).Where(x => x.Count() == 2 && x.Count() == 3).Count() == 2;
         }
         public bool HasFourOfAKind()
         {
@@ -171,33 +179,38 @@ namespace PokerPlayer
         public bool HasStraightFlush()
         {
             List<Card> tempHand = new List<Card> { };
-            tempHand = hand1.GroupBy(x => x.CardSuit).Where(x => x.Count() == 5).First().ToList();
-            tempHand.OrderBy(x => x.CardRank);
+            tempHand = (List<Card>)hand1.GroupBy(x => x.CardSuit).First().OrderBy(y => (int)y.CardRank).ToList();
+            
             //loop through tempHand rank
-            for (int i = 0; i < tempHand.Count() - 1; i++)
+            for (int i = 0; i < (tempHand.Count() - 1); i++)
             {
                 //take value of card rank and next card rank
                 int currentRank = (int)tempHand[i].CardRank;
                 int nextRank = (int)tempHand[i + 1].CardRank;
-                //if next rank equals current rank plus 1 return true'
+                //if next rank equals current rank plus 1 return true
                 if (nextRank == currentRank + 1)
                 {
-                    return true;
+                    if (i == 3)
+                    {
+                        return true;
+                    }
                 }
-                return false;
+                else
+                {
+                    break;
+                }
             }
             return false;
         }
         public bool HasRoyalFlush()
         {
             List<Card> tempHand = new List<Card> { };
-            tempHand = hand1.GroupBy(x => x.CardSuit).Where(x => x.Count() == 5).First().OrderBy(x => x.CardRank).ToList();
-            
+            tempHand = (List<Card>)hand1.GroupBy(x => x.CardSuit).First().OrderBy(y => (int)y.CardRank).ToList();
             //loop through tempHand rank
             for (int i = 0; i < hand1.Count(); i++)
             {
                 //take value of card rank 
-                int currentRank = (int)hand1[i].CardRank;
+                int currentRank = (int)tempHand[i].CardRank;
                 //currentRank equal i + 10
                 if (currentRank == i+10)
                 {
