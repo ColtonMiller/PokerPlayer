@@ -75,6 +75,7 @@ namespace PokerPlayer
         {
             get
             {
+                //check all hand types starting with the most restrictive
                 if (this.HasRoyalFlush())
                 {
                     return HandType.RoyalFlush;
@@ -119,6 +120,10 @@ namespace PokerPlayer
         }
         // Constructor that isn't used
         public PokerPlayer() { }
+        /// <summary>
+        /// checks for one pair in a hand
+        /// </summary>
+        /// <returns></returns>
         public bool HasPair()
         {
 
@@ -129,15 +134,28 @@ namespace PokerPlayer
         {
             return hand1.Distinct().Count() == 5;
         }
+        /// <summary>
+        /// checks for two pairs in a hand
+        /// </summary>
+        /// <returns></returns>
         public bool HasTwoPair()
         {
+            //grouped by card rank if there is two sperate pairs
             return hand1.GroupBy(x => x.CardRank).Where(x => x.Count() == 2).Count() == 2;
         }
+        /// <summary>
+        /// checks for three of a kind in a hand
+        /// </summary>
+        /// <returns></returns>
         public bool HasThreeOfAKind()
         {
             //group by rank and where count is 3 and count is one return true
             return hand1.GroupBy(x => x.CardRank).Where(x => x.Count() == 3).Count() == 1;
         }
+        /// <summary>
+        /// checks for a straight in a hand
+        /// </summary>
+        /// <returns></returns>
         public bool HasStraight()
         {
             //create temp list to hold hand1
@@ -149,7 +167,7 @@ namespace PokerPlayer
                 //take value of card rank and next card rank
                 int currentRank = (int)tempStraight[i].CardRank;
                 int nextRank = (int)tempStraight[i + 1].CardRank;
-                //if next rank equals current rank plus 1 return true'
+                //if next rank equals current rank plus 1 and i equals 3 return true 
                 if (nextRank == currentRank + 1)
                 {
                     if (i == 3)
@@ -157,6 +175,7 @@ namespace PokerPlayer
                         return true;
                     }
                 }
+                //breaks out of for loop
                 else
                 {
                     break;
@@ -164,21 +183,42 @@ namespace PokerPlayer
             }
             return false;
         }
+        /// <summary>
+        /// checks for flush in a hand
+        /// </summary>
+        /// <returns></returns>
         public bool HasFlush()
         {
+            //group by suit if all cards are same suit returns true
             return hand1.GroupBy(x => x.CardSuit).Where(x => x.Count() == 5).Count() == 1;
         }
+        /// <summary>
+        /// checks for full house in a hand
+        /// </summary>
+        /// <returns></returns>
         public bool HasFullHouse()
         {
-            return hand1.GroupBy(x => x.CardSuit).Where(x => x.Count() == 2 && x.Count() == 3).Count() == 2;
+            //if hand has pair and a three of a kind
+            return HasPair() && HasThreeOfAKind() == true;
         }
+        /// <summary>
+        /// checks for a four of a kind
+        /// </summary>
+        /// <returns></returns>
         public bool HasFourOfAKind()
         {
-            return hand1.GroupBy(x => x.CardRank).Where(x => x.Count() == 4).Count() == 1;
+
+            return hand1.GroupBy(x => x.CardSuit).Distinct().Count() == 4 && hand1.GroupBy(x => x.CardRank).Where(x => x.Count() == 4).Count() == 1;
         }
+        /// <summary>
+        /// checks for straight and flush in a hand
+        /// </summary>
+        /// <returns></returns>
         public bool HasStraightFlush()
         {
+            //make temp list of cards
             List<Card> tempHand = new List<Card> { };
+            //set temp list to where hand is a flush
             tempHand = (List<Card>)hand1.GroupBy(x => x.CardSuit).First().OrderBy(y => (int)y.CardRank).ToList();
             
             //loop through tempHand rank
@@ -187,7 +227,7 @@ namespace PokerPlayer
                 //take value of card rank and next card rank
                 int currentRank = (int)tempHand[i].CardRank;
                 int nextRank = (int)tempHand[i + 1].CardRank;
-                //if next rank equals current rank plus 1 return true
+                //if next rank equals current rank plus 1 and i equals 3 return true
                 if (nextRank == currentRank + 1)
                 {
                     if (i == 3)
@@ -195,6 +235,7 @@ namespace PokerPlayer
                         return true;
                     }
                 }
+                //else break for loop
                 else
                 {
                     break;
@@ -202,23 +243,36 @@ namespace PokerPlayer
             }
             return false;
         }
+        /// <summary>
+        /// checks for royal flush!
+        /// </summary>
+        /// <returns></returns>
         public bool HasRoyalFlush()
         {
+            //make temp list of cards
             List<Card> tempHand = new List<Card> { };
+            //set temp list to flush
             tempHand = (List<Card>)hand1.GroupBy(x => x.CardSuit).First().OrderBy(y => (int)y.CardRank).ToList();
             //loop through tempHand rank
-            for (int i = 0; i < hand1.Count(); i++)
+            for (int i = 0; i < tempHand.Count(); i++)
             {
-                //take value of card rank 
-                int currentRank = (int)tempHand[i].CardRank;
-                //currentRank equal i + 10
-                if (currentRank == i+10)
-                {
-                    return true;
-                }
-                return false;
+                    //take value of card rank 
+                    int currentRank = (int)tempHand[i].CardRank;
+                    //currentRank equal i + 10 and i equals 3 return true
+                    if (currentRank == i + 10)
+                    {
+                        if (i == 3)
+                        {
+                            return true;
+                        }
+                    }
+                    //break for loop
+                    else
+                    {
+                        break;
+                    }
             }
-            return false;
+                return false;
         }
     }
     //Guides to pasting your Deck and Card class
